@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 public class Principal extends javax.swing.JFrame {
 
     public Principal() {
-        setUndecorated(true);
+        // setUndecorated(true);
                 
         initComponents();
     }

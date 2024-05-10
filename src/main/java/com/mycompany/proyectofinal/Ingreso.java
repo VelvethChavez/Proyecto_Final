@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 
 public class Ingreso extends javax.swing.JFrame {
     public Ingreso() {
-        setUndecorated(true);
+        // setUndecorated(true);
         initComponents();
     }
 

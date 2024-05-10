@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 public class Platos extends javax.swing.JFrame {
 
     public Platos() {
-        setUndecorated(true);
+        // setUndecorated(true);
         initComponents();
     }
 

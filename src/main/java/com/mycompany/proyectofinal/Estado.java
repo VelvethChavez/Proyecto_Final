@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 
 public class Estado extends javax.swing.JFrame {
     public Estado() {
-        setUndecorated(true);
+        // setUndecorated(true);
         initComponents();
     }
     
