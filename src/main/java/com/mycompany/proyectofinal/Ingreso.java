@@ -2,12 +2,19 @@ package com.mycompany.proyectofinal;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import javax.swing.JFrame;
+import javax.swing.ButtonGroup;
+import javax.swing.JOptionPane;
 
 public class Ingreso extends javax.swing.JFrame {
+    /// Creación de la COLA ///
+    public ProyectoFinal.Nodo colaOrdenes = new ProyectoFinal.Nodo();
+    
     public Ingreso() {
-        // setUndecorated(true);
-        initComponents();
+        initComponents(); // Óptimamente poner esto de primero siempre
+        
+        ButtonGroup grpTurnoMesero = new ButtonGroup(); // Esto sirve para que se seleccione un radio button a la vez
+        grpTurnoMesero.add(rbMatutina);                 // y no se pueda deseleccionar. Funcionamiento correcto de los
+        grpTurnoMesero.add(rbVespertina);               // radioButtons.
     }
 
     @SuppressWarnings("unchecked")
@@ -25,8 +32,8 @@ public class Ingreso extends javax.swing.JFrame {
         txtMesero = new javax.swing.JTextField();
         btnEstado = new javax.swing.JButton();
         btnRealizarOrden = new javax.swing.JButton();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox2 = new javax.swing.JCheckBox();
+        rbMatutina = new javax.swing.JRadioButton();
+        rbVespertina = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -48,7 +55,7 @@ public class Ingreso extends javax.swing.JFrame {
         jLabel1.setToolTipText("");
 
         cmbPlatillos.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        cmbPlatillos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Plato 1", "Plato 2", "Plato 3" }));
+        cmbPlatillos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Lasaña", "Pizza Italiana", "Tiramisú" }));
         cmbPlatillos.setName(""); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
@@ -136,18 +143,18 @@ public class Ingreso extends javax.swing.JFrame {
             }
         });
 
-        jCheckBox1.setText("Matutina");
-        jCheckBox1.setActionCommand("Matutina");
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+        rbMatutina.setSelected(true);
+        rbMatutina.setText("Matutina");
+        rbMatutina.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox1ActionPerformed(evt);
+                rbMatutinaActionPerformed(evt);
             }
         });
 
-        jCheckBox2.setText("Vespertina");
-        jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
+        rbVespertina.setText("Vespertina");
+        rbVespertina.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox2ActionPerformed(evt);
+                rbVespertinaActionPerformed(evt);
             }
         });
 
@@ -165,14 +172,15 @@ public class Ingreso extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jCheckBox1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jCheckBox2)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(btnEstado, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnRealizarOrden, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnRealizarOrden, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(11, 11, 11)
+                        .addComponent(rbMatutina)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(rbVespertina)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -182,9 +190,9 @@ public class Ingreso extends javax.swing.JFrame {
                 .addComponent(panelOrden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox1)
-                    .addComponent(jCheckBox2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
+                    .addComponent(rbMatutina)
+                    .addComponent(rbVespertina))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnRealizarOrden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -225,16 +233,27 @@ public class Ingreso extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEstadoActionPerformed
 
     private void btnRealizarOrdenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRealizarOrdenActionPerformed
-        // TODO add your handling code here:
+        String platilloSeleccionado = (String) cmbPlatillos.getSelectedItem();
+        String cliente = txtCliente.getText().trim();
+        String mesero = txtMesero.getText().trim();
+        String turnoMesero = ObtenerTurnoMesero();
+        
+        if(!platilloSeleccionado.trim().isEmpty() & !cliente.isEmpty() & !mesero.isEmpty() & !turnoMesero.isEmpty()){
+            colaOrdenes.push(platilloSeleccionado.trim(), cliente, mesero, turnoMesero);
+            JOptionPane.showMessageDialog(null, "Orden realizada", "", JOptionPane.PLAIN_MESSAGE);
+            LimpiarCampos();
+        } else {
+            JOptionPane.showMessageDialog(null, "Uno o más campos están vacíos", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_btnRealizarOrdenActionPerformed
 
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
+    private void rbMatutinaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbMatutinaActionPerformed
+        
+    }//GEN-LAST:event_rbMatutinaActionPerformed
 
-    private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox2ActionPerformed
+    private void rbVespertinaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbVespertinaActionPerformed
+        
+    }//GEN-LAST:event_rbVespertinaActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -267,19 +286,28 @@ public class Ingreso extends javax.swing.JFrame {
             }
         });
     }
+    
+    public String ObtenerTurnoMesero(){
+        return (rbMatutina.isSelected()) ? rbMatutina.getText() : rbVespertina.getText();
+    }
+    
+    public void LimpiarCampos(){
+        txtCliente.setText("");
+        txtMesero.setText("");
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEstado;
     private javax.swing.JButton btnRealizarOrden;
     private javax.swing.JButton btnRegresar;
     private javax.swing.JComboBox<String> cmbPlatillos;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel panelOrden;
+    private javax.swing.JRadioButton rbMatutina;
+    private javax.swing.JRadioButton rbVespertina;
     private javax.swing.JTextField txtCliente;
     private javax.swing.JTextField txtMesero;
     // End of variables declaration//GEN-END:variables
