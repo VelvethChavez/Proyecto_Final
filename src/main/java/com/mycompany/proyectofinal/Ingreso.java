@@ -7,14 +7,15 @@ import javax.swing.JOptionPane;
 
 public class Ingreso extends javax.swing.JFrame {
     /// Creación de la COLA ///
-    public ProyectoFinal.Nodo colaOrdenes = new ProyectoFinal.Nodo();
+    public ProyectoFinal.Nodo colaOrdenes = new ProyectoFinal.Nodo(); // El código de la cola viene del archivo ProyectoFinal.java
     
     public Ingreso() {
         initComponents(); // Óptimamente poner esto de primero siempre
         
         ButtonGroup grpTurnoMesero = new ButtonGroup(); // Esto sirve para que se seleccione un radio button a la vez
-        grpTurnoMesero.add(rbMatutina);                 // y no se pueda deseleccionar. Funcionamiento correcto de los
-        grpTurnoMesero.add(rbVespertina);               // radioButtons.
+        grpTurnoMesero.add(rbMatutina);                 // y no se pueda deseleccionar o seleccionar más de un radioButton.
+        grpTurnoMesero.add(rbVespertina);               // Básicamente sirve para agrupar los radioButtons y asegurar el
+        grpTurnoMesero.add(rbTodoDia);                      // funcionamiento correcto de los radioButtons.
     }
 
     @SuppressWarnings("unchecked")
@@ -34,6 +35,7 @@ public class Ingreso extends javax.swing.JFrame {
         btnRealizarOrden = new javax.swing.JButton();
         rbMatutina = new javax.swing.JRadioButton();
         rbVespertina = new javax.swing.JRadioButton();
+        rbTodoDia = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -158,28 +160,30 @@ public class Ingreso extends javax.swing.JFrame {
             }
         });
 
+        rbTodoDia.setText("Todo el día");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(77, 77, 77)
-                .addComponent(panelOrden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnRegresar, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnEstado, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+                        .addComponent(btnRegresar, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnEstado, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnRealizarOrden, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addComponent(rbMatutina)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(rbVespertina)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(panelOrden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(rbMatutina)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(rbVespertina)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(rbTodoDia)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -191,7 +195,8 @@ public class Ingreso extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(rbMatutina)
-                    .addComponent(rbVespertina))
+                    .addComponent(rbVespertina)
+                    .addComponent(rbTodoDia))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -233,15 +238,21 @@ public class Ingreso extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEstadoActionPerformed
 
     private void btnRealizarOrdenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRealizarOrdenActionPerformed
+        /*
+        Obtenemos los valores los textBox que contienen el nombre del cliente y del mesero. A su vez, obtenemos el valor
+        del comboBox que contiene los platillos (´.getSelectedItem()´ nos retorna un Object, lo convertimos a String.
+        El valor de turnoMesero está dado por la función ´ObtenerTurnoMesero()´.
+        */
         String platilloSeleccionado = (String) cmbPlatillos.getSelectedItem();
         String cliente = txtCliente.getText().trim();
         String mesero = txtMesero.getText().trim();
         String turnoMesero = ObtenerTurnoMesero();
         
+        // Verificamos que los campos no estén vacíos
         if(!platilloSeleccionado.trim().isEmpty() & !cliente.isEmpty() & !mesero.isEmpty() & !turnoMesero.isEmpty()){
-            colaOrdenes.push(platilloSeleccionado.trim(), cliente, mesero, turnoMesero);
-            JOptionPane.showMessageDialog(null, "Orden realizada", "", JOptionPane.PLAIN_MESSAGE);
-            LimpiarCampos();
+            colaOrdenes.push(platilloSeleccionado.trim(), cliente, mesero, turnoMesero);           // Pusheamos a la cola
+            JOptionPane.showMessageDialog(null, "Orden realizada", "", JOptionPane.PLAIN_MESSAGE); // Mensaje de "Orden realizada"
+            LimpiarCampos();                                                                       // Limpiamos los campos
         } else {
             JOptionPane.showMessageDialog(null, "Uno o más campos están vacíos", "Advertencia", JOptionPane.WARNING_MESSAGE);
         }
@@ -288,10 +299,21 @@ public class Ingreso extends javax.swing.JFrame {
     }
     
     public String ObtenerTurnoMesero(){
-        return (rbMatutina.isSelected()) ? rbMatutina.getText() : rbVespertina.getText();
+        /*
+        Verificamos cuál de los radioButtons está seleccionado usando su propiedad ´isSelected()´.
+        Luego obtenemos el texto que contiene dicho radioButton y ese es el turno del mesero.
+        */
+        if(rbMatutina.isSelected()){
+            return rbMatutina.getText();
+        } else if(rbVespertina.isSelected()){
+            return rbVespertina.getText();
+        } else {
+            return rbTodoDia.getText();
+        }
     }
     
     public void LimpiarCampos(){
+        // Ponemos el texto de los textBox como una cadena vacía
         txtCliente.setText("");
         txtMesero.setText("");
     }
@@ -307,6 +329,7 @@ public class Ingreso extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel panelOrden;
     private javax.swing.JRadioButton rbMatutina;
+    private javax.swing.JRadioButton rbTodoDia;
     private javax.swing.JRadioButton rbVespertina;
     private javax.swing.JTextField txtCliente;
     private javax.swing.JTextField txtMesero;
