@@ -1,5 +1,5 @@
 package com.mycompany.proyectofinal;
-//Hola soy velveth
+//Hola muchachos
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
